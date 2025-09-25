@@ -11,7 +11,7 @@ import {
   BarController
 } from 'chart.js';
 
-// 注册必要的Chart.js组件
+// 註冊必要的Chart.js元件
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, BarController);
 
 const props = defineProps({
@@ -32,25 +32,25 @@ const props = defineProps({
 });
 
 const canvasRef = ref(null);
-// 使用对象存储图表实例，避免响应式问题
+// 使用物件儲存圖表實例，避免響應式問題
 const chartInstance = {
   current: null
 };
 
 const getChartTitle = () => {
   const titles = {
-    hour: '24小时使用统计',
-    day: '每日使用统计',
-    week: '每周使用统计'
+    hour: '24小時使用統計',
+    day: '每日使用統計',
+    week: '每週使用統計'
   };
-  return titles[props.timeDimension] || '使用统计';
+  return titles[props.timeDimension] || '使用統計';
 };
 
 const initChart = () => {
   const ctx = canvasRef.value?.getContext('2d');
   if (!ctx || !props.timeStats || props.timeStats.length === 0) return;
 
-  // 确保先销毁旧图表
+  // 確保先銷毀舊圖表
   if (chartInstance.current) {
     chartInstance.current.destroy();
   }
@@ -60,7 +60,7 @@ const initChart = () => {
     data: {
       labels: props.timeLabels,
       datasets: [{
-        label: '使用时间 (分钟)',
+        label: '使用時間 (分鐘)',
         data: props.timeStats,
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgba(54, 162, 235, 1)',
@@ -81,7 +81,7 @@ const initChart = () => {
         tooltip: {
           callbacks: {
             label: function(context) {
-              return `${context.parsed.y} 分钟`;
+              return `${context.parsed.y} 分鐘`;
             }
           }
         }
@@ -91,7 +91,7 @@ const initChart = () => {
           beginAtZero: true,
           title: {
             display: true,
-            text: '分钟'
+            text: '分鐘'
           }
         },
         x: {
@@ -114,10 +114,10 @@ const updateChart = () => {
       initChart();
     } else {
       if (props.timeLabels.length !== chartInstance.current.data.labels.length) {
-        // 如果标签数量变化，重新创建图表
+        // 如果標籤數量變化，重新建立圖表
         initChart();
       } else {
-        // 只更新数据
+        // 只更新資料
         chartInstance.current.data.labels = props.timeLabels;
         chartInstance.current.data.datasets[0].data = props.timeStats;
         chartInstance.current.update();
@@ -126,7 +126,7 @@ const updateChart = () => {
   });
 };
 
-// 监听数据变化
+// 監聽資料變化
 watch(() => [props.timeStats, props.timeLabels, props.timeDimension], () => {
   updateChart();
 }, { deep: true });

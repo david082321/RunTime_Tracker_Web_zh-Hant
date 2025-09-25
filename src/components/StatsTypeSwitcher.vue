@@ -19,9 +19,9 @@ const statsType = ref(props.modelValue);
 const currentOffset = ref(props.offset);
 
 const statsTypes = [
-  { value: 'daily', label: '日统计', icon: '📅' },
-  { value: 'weekly', label: '周统计', icon: '📊' },
-  { value: 'monthly', label: '月统计', icon: '📈' }
+  { value: 'daily', label: '日統計', icon: '📅' },
+  { value: 'weekly', label: '周統計', icon: '📊' },
+  { value: 'monthly', label: '月統計', icon: '📈' }
 ];
 
 watch(statsType, (newValue) => {
@@ -30,7 +30,7 @@ watch(statsType, (newValue) => {
   emit('update:offset', 0);
 });
 
-// 日期增加减少
+// 日期增加減少
 const decreaseOffset = () => {
   currentOffset.value--;
   emit('update:offset', currentOffset.value);
@@ -43,7 +43,7 @@ const increaseOffset = () => {
   }
 };
 
-// 获取时间范围文本
+// 取得時間範圍文字
 const getTimeRangeText = () => {
   if (currentOffset.value === 0) {
     switch (statsType.value) {
@@ -64,11 +64,11 @@ const getTimeRangeText = () => {
 
 <template>
   <div class="bg-white dark:bg-[#1e2022] rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm p-4 mb-6 transition-all duration-300">
-    <!-- 顶部选择器区域 -->
+    <!-- 頂部選擇器區域 -->
     <div class="flex flex-col space-y-3 md:space-y-0 md:flex-row md:items-center md:justify-between gap-4">
-      <!-- 统计类型选择器 -->
+      <!-- 統計類型選擇器 -->
       <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-        <span class="text-sm text-gray-600 dark:text-gray-300 font-medium">统计类型:</span>
+        <span class="text-sm text-gray-600 dark:text-gray-300 font-medium">統計類型:</span>
         <div class="inline-flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 shadow-inner">
           <button
               v-for="type in statsTypes"
@@ -88,12 +88,12 @@ const getTimeRangeText = () => {
         </div>
       </div>
 
-      <!-- 时间范围选择器 -->
+      <!-- 時間範圍選擇器 -->
       <div v-if="statsType !== 'daily'" class="flex items-center justify-center gap-2 sm:gap-3">
         <button
             @click="decreaseOffset"
             class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
-            title="前一个时间段"
+            title="前一個時間段"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -115,7 +115,7 @@ const getTimeRangeText = () => {
               ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
               : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
           ]"
-            title="后一个时间段"
+            title="後一個時間段"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -124,9 +124,9 @@ const getTimeRangeText = () => {
       </div>
     </div>
 
-    <!-- 底部统计范围信息 -->
+    <!-- 底部統計範圍資訊 -->
     <div class="mt-3 md:mt-2 text-center md:text-left">
-      <span class="text-sm text-gray-600 dark:text-gray-400">统计范围: </span>
+      <span class="text-sm text-gray-600 dark:text-gray-400">統計範圍: </span>
       <span class="text-sm font-medium">{{ dateRangeText }}</span>
     </div>
   </div>

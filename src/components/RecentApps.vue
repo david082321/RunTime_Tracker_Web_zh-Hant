@@ -11,12 +11,12 @@ const props = defineProps({
 const recentApps = ref([]);
 const loading = ref(false);
 const error = ref(null);
-const isExpanded = ref(false); // 控制展开收起状态
-const showLimit = ref(5); // 默认显示的条数
+const isExpanded = ref(false); // 控制展開收起狀態
+const showLimit = ref(5); // 預設顯示的條數
 
-// 计算处理后的应用数据
+// 計算處理後的程式資料
 const processedApps = computed(() => {
-  // 按时间戳降序排序
+  // 按時間戳降序排序
   const sortedApps = [...recentApps.value].sort((a, b) =>
       new Date(b.timestamp) - new Date(a.timestamp)
   );
@@ -26,11 +26,11 @@ const processedApps = computed(() => {
     let endTime = null;
     let duration = null;
 
-    // 如果是第一个应用且正在运行，则计算到当前时间的持续时间
+    // 如果是第一個程式且正在執行，則計算到目前時間的持續時間
     if (app.running && index === 0) {
       duration = Math.floor((new Date() - startTime) / 1000);
     } else if (index > 0) {
-      // 结束时间是前一个应用的时间戳（因为现在是降序排序）
+      // 結束時間是前一個程式的時間戳（因為現在是降序排序）
       endTime = new Date(arr[index - 1].timestamp);
       duration = Math.floor((endTime - startTime) / 1000);
     }
@@ -44,7 +44,7 @@ const processedApps = computed(() => {
   });
 });
 
-// 计算要显示的应用列表
+// 計算要顯示的程式列表
 const displayedApps = computed(() => {
   if (isExpanded.value || processedApps.value.length <= showLimit.value) {
     return processedApps.value;
@@ -52,46 +52,46 @@ const displayedApps = computed(() => {
   return processedApps.value.slice(0, showLimit.value);
 });
 
-// 是否需要显示展开/收起按钮
+// 是否需要顯示展開/收起按鈕
 const shouldShowToggle = computed(() => {
   return processedApps.value.length > showLimit.value;
 });
 
-// 切换展开/收起状态
+// 切換展開/收起狀態
 const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value;
 };
 
-// 获取最近使用的应用
+// 取得最近使用的程式
 const fetchRecentApps = async () => {
   try {
     loading.value = true;
     error.value = null;
     const response = await fetch(`${API_BASE}/recent/${props.deviceId}`);
-    if (!response.ok) throw new Error('获取最近应用失败');
+    if (!response.ok) throw new Error('取得最近程式失敗');
     const data = await response.json();
-    // 不再反转数组，因为现在会在computed中排序
+    // 不再反轉陣列，因為現在會在computed中排序
     recentApps.value = data.data;
   } catch (err) {
-    error.value = `获取最近应用失败: ${err.message}`;
+    error.value = `取得最近程式失敗: ${err.message}`;
   } finally {
     loading.value = false;
   }
 };
 
-// 格式化持续时间为更友好的显示
+// 格式化持續時間為更友好的顯示
 const formatDuration = (seconds) => {
-  if (seconds === null) return '设备待机';
+  if (seconds === null) return '裝置待機';
   if (seconds < 60) return `${seconds}秒`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}分钟`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}分鐘`;
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  return `${hours}小时${minutes}分钟`;
+  return `${hours}小時${minutes}分鐘`;
 };
 
-// 格式化时间为本地时间
+// 格式化時間為本機時間
 const formatTime = (isoString) => {
-  if (!isoString) return '未结束';
+  if (!isoString) return '未結束';
   const date = new Date(isoString);
   return date.toLocaleString();
 };
@@ -102,25 +102,25 @@ watch(() => props.deviceId, fetchRecentApps);
 
 <template>
   <div class="mt-8 rounded-lg border-2 border-gray-200 shadow-md p-6 relative dark:border-gray-700">
-    <!-- 标题和刷新按钮 -->
+    <!-- 標題和重新整理按鈕 -->
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-medium">最近使用的应用</h3>
+      <h3 class="text-lg font-medium">最近使用的程式</h3>
       <button @click="fetchRecentApps" class="px-3 py-1 text-sm bg-gray-100 rounded-md hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
         <span class="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          刷新
+          重新整理
         </span>
       </button>
     </div>
 
-    <!-- 错误提示 -->
+    <!-- 錯誤提示 -->
     <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
       {{ error }}
     </div>
 
-    <!-- 加载遮罩层 -->
+    <!-- 載入遮罩層 -->
     <div v-if="loading" class="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-lg">
       <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -128,34 +128,34 @@ watch(() => props.deviceId, fetchRecentApps);
       </svg>
     </div>
 
-    <!-- 最近应用列表 -->
+    <!-- 最近程式列表 -->
     <div class="overflow-x-auto transition-opacity duration-300" :class="{'opacity-50': loading}">
       <div v-if="!loading && recentApps.length === 0" class="text-center py-4 text-gray-500">
-        暂无最近使用应用记录
+        暫無最近使用程式記錄
       </div>
 
       <div v-if="recentApps.length > 0">
-        <!-- 应用表格 -->
+        <!-- 程式表格 -->
         <table class="min-w-full not-dark:divide-y divide-gray-200">
           <thead>
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">应用</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">开始时间</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">结束时间</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">持续时间</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">程式</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">開始時間</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">結束時間</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">持續時間</th>
           </tr>
           </thead>
           <tbody  class="not-dark:divide-y divide-gray-50">
           <tr v-for="app in displayedApps" :key="app._id">
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium truncate max-w-xs">{{ app.appName }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ formatTime(app.startTime) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ app.endTime ? formatTime(app.endTime) : '运行中' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ app.endTime ? formatTime(app.endTime) : '執行中' }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ formatDuration(app.duration) }}</td>
           </tr>
           </tbody>
         </table>
 
-        <!-- 展开/收起按钮 -->
+        <!-- 展開/收起按鈕 -->
         <div v-if="shouldShowToggle" class="flex justify-center mt-4">
           <button
               @click="toggleExpanded"
@@ -165,13 +165,13 @@ watch(() => props.deviceId, fetchRecentApps);
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
               </svg>
-              收起 (显示前{{ showLimit }}条)
+              收起 (顯示前{{ showLimit }}條)
             </template>
             <template v-else>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
-              展开查看全部 ({{ processedApps.length }}条)
+              展開查看全部 ({{ processedApps.length }}條)
             </template>
           </button>
         </div>
@@ -181,7 +181,7 @@ watch(() => props.deviceId, fetchRecentApps);
 </template>
 
 <style scoped>
-/* 添加一些响应式样式 */
+/* 新增一些響應式樣式 */
 @media (max-width: 640px) {
   table {
     display: block;

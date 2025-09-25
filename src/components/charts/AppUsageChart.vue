@@ -23,7 +23,7 @@ const props = defineProps({
 
 const canvasRef = ref(null);
 
-// 组件实例内的图表引用
+// 元件實例內的圖表引用
 const chartInstance = {
   current: null
 };
@@ -67,7 +67,7 @@ const handleAppUsageChart = () => {
   const colors = generateColors(labels.length);
 
   if (!chartInstance.current) {
-    // 首次创建图表
+    // 首次建立圖表
     chartInstance.current = new Chart(ctx, {
       type: 'doughnut',
       data: {
@@ -94,7 +94,7 @@ const handleAppUsageChart = () => {
                 const value = context.raw || 0;
                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
                 const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-                return `${label}: ${value}分钟 (${percentage}%)`;
+                return `${label}: ${value}分鐘 (${percentage}%)`;
               }
             }
           }
@@ -102,7 +102,7 @@ const handleAppUsageChart = () => {
       }
     });
   } else {
-    // 更新现有图表数据
+    // 更新現有圖表資料
     chartInstance.current.data.labels = labels;
     chartInstance.current.data.datasets[0].data = data;
     chartInstance.current.data.datasets[0].backgroundColor = colors;
@@ -110,14 +110,14 @@ const handleAppUsageChart = () => {
   }
 };
 
-// 更新图表
+// 更新圖表
 const updateCharts = () => {
   nextTick(() => {
     handleAppUsageChart();
   });
 };
 
-// 监听数据变化
+// 監聽資料變化
 watch(() => [props.appStats, props.totalUsage], () => {
   updateCharts();
 }, { deep: true });
@@ -136,7 +136,7 @@ onUnmounted(() => {
 
 <template>
   <div class="p-4 rounded-lg border-2 border-gray-200 shadow-md dark:bg-[#181a1b] dark:border-gray-700" style="height: 300px;">
-    <h3 class="text-lg font-medium mb-4">应用使用时间</h3>
+    <h3 class="text-lg font-medium mb-4">程式使用時間</h3>
     <div class="flex items-center justify-center" style="height: calc(100% - 2rem);">
       <canvas id="appUsageChart" ref="canvasRef"></canvas>
     </div>

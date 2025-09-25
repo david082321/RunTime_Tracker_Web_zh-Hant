@@ -1,24 +1,24 @@
 import { ref } from 'vue';
 import config from '../config.js';
 
-// 从配置文件中获取API基础路径
+// 從設定檔中取得API基礎路徑
 const API_BASE = config.API_BASE;
 
 /**
- * 提供设备使用统计数据的自定义组合式函数
- * @returns {Object} 包含统计数据、错误状态、加载状态和获取统计方法的对象
+ * 提供裝置使用統計資料的自訂組合式函式
+ * @returns {Object} 包含統計資料、錯誤狀態、載入狀態和取得統計方法的物件
  */
 export function useStats() {
-    // 响应式变量：存储统计结果
+    // 響應式變數：儲存統計結果
     const stats = ref(null);
-    // 响应式变量：存储错误信息
+    // 響應式變數：儲存錯誤資訊
     const error = ref(null);
-    // 响应式变量：标记是否正在加载数据
+    // 響應式變數：標記是否正在載入資料
     const loading = ref(false);
 
     /**
-     * 计算当前时区偏移小时数
-     * @returns {number} 时区偏移小时数
+     * 計算目前時區偏移小時數
+     * @returns {number} 時區偏移小時數
      */
     const getTimezoneOffset = () => {
         const offset = new Date().getTimezoneOffset();
@@ -26,20 +26,20 @@ export function useStats() {
     };
 
     /**
-     * 获取设备每日使用统计数据
-     * @param {string} deviceId - 设备ID
-     * @param {string|null} date - 查询日期(格式YYYY-MM-DD)，默认为当天
+     * 取得裝置每日使用統計資料
+     * @param {string} deviceId - 裝置ID
+     * @param {string|null} date - 查詢日期(格式YYYY-MM-DD)，預設為當天
      */
     const fetchDailyStats = async (deviceId, date = null) => {
         loading.value = true;
         error.value = null;
 
         try {
-            // 获取时区偏移并构造查询参数
+            // 取得時區偏移並構造查詢參數
             const offsetHours = getTimezoneOffset();
             const timezoneParam = `timezoneOffset=${offsetHours > 0 ? '+' : ''}${offsetHours}`;
 
-            // 根据是否指定日期构造不同URL
+            // 根據是否指定日期構造不同URL
             let url = `${API_BASE}/stats/${deviceId}?${timezoneParam}`;
             if (date) {
                 const today = new Date().toISOString().split('T')[0];
@@ -48,48 +48,48 @@ export function useStats() {
                     : `${API_BASE}/stats/${deviceId}?date=${date}&${timezoneParam}`;
             }
 
-            // 发送请求并处理响应
+            // 發送請求並處理響應
             const response = await fetch(url);
-            if (!response.ok) throw new Error('获取统计失败');
+            if (!response.ok) throw new Error('取得統計失敗');
 
             const data = await response.json();
             stats.value = transformDailyData(data);
         } catch (err) {
-            error.value = `获取统计信息失败: ${err.message}`;
+            error.value = `取得統計資訊失敗: ${err.message}`;
         } finally {
             loading.value = false;
         }
     };
 
     /**
-     * 获取设备每周使用统计数据
-     * @param {string} deviceId - 设备ID
-     * @param {number} weekOffset - 周偏移量(0表示本周)
+     * 取得裝置每週使用統計資料
+     * @param {string} deviceId - 裝置ID
+     * @param {number} weekOffset - 周偏移量(0表示本週)
      */
     const fetchWeeklyStats = async (deviceId, weekOffset = 0) => {
         loading.value = true;
         error.value = null;
 
         try {
-            // 获取时区偏移并构造URL
+            // 取得時區偏移並構造URL
             const offsetHours = getTimezoneOffset();
             const url = `${API_BASE}/weekly/${deviceId}?weekOffset=${weekOffset}&timezoneOffset=${offsetHours}`;
 
             const response = await fetch(url);
-            if (!response.ok) throw new Error('获取周统计失败');
+            if (!response.ok) throw new Error('取得周統計失敗');
 
             const data = await response.json();
             stats.value = transformWeeklyData(data);
         } catch (err) {
-            error.value = `获取周统计信息失败: ${err.message}`;
+            error.value = `取得周統計資訊失敗: ${err.message}`;
         } finally {
             loading.value = false;
         }
     };
 
     /**
-     * 获取设备每月使用统计数据
-     * @param {string} deviceId - 设备ID
+     * 取得裝置每月使用統計資料
+     * @param {string} deviceId - 裝置ID
      * @param {number} monthOffset - 月偏移量(0表示本月)
      */
     const fetchMonthlyStats = async (deviceId, monthOffset = 0) => {
@@ -97,121 +97,121 @@ export function useStats() {
         error.value = null;
 
         try {
-            // 获取时区偏移并构造URL
+            // 取得時區偏移並構造URL
             const offsetHours = getTimezoneOffset();
             const url = `${API_BASE}/monthly/${deviceId}?monthOffset=${monthOffset}&timezoneOffset=${offsetHours}`;
 
             const response = await fetch(url);
-            if (!response.ok) throw new Error('获取月统计失败');
+            if (!response.ok) throw new Error('取得月統計失敗');
 
             const data = await response.json();
             stats.value = transformMonthlyData(data);
         } catch (err) {
-            error.value = `获取月统计信息失败: ${err.message}`;
+            error.value = `取得月統計資訊失敗: ${err.message}`;
         } finally {
             loading.value = false;
         }
     };
 
     /**
-     * 转换每日统计数据为统一格式
-     * @param {Object} data - 原始API响应数据
-     * @returns {Object} 格式化后的统计数据
+     * 轉換每日統計資料為統一格式
+     * @param {Object} data - 原始API響應資料
+     * @returns {Object} 格式化後的統計資料
      */
     const transformDailyData = (data) => {
         return {
-            type: 'daily',  // 数据类型标识
-            dateRange: {    // 日期范围(开始和结束相同)
+            type: 'daily',  // 資料類型標識
+            dateRange: {    // 日期範圍(開始和結束相同)
                 start: data.date || new Date().toISOString().split('T')[0],
                 end: data.date || new Date().toISOString().split('T')[0]
             },
-            totalUsage: data.totalUsage,  // 总使用时长
-            appStats: data.appStats,      // 各应用使用统计
-            timeStats: data.hourlyStats,  // 按小时统计的使用数据
-            timeLabels: Array.from({length: 24}, (_, i) => `${i}时`),  // 24小时标签
-            timeDimension: 'hour'         // 时间维度标识
+            totalUsage: data.totalUsage,  // 總使用時長
+            appStats: data.appStats,      // 各程式使用統計
+            timeStats: data.hourlyStats,  // 按小時統計的使用資料
+            timeLabels: Array.from({length: 24}, (_, i) => `${i}時`),  // 24小時標籤
+            timeDimension: 'hour'         // 時間維度標識
         };
     };
 
     /**
-     * 转换每周统计数据为统一格式
-     * @param {Object} data - 原始API响应数据
-     * @returns {Object} 格式化后的统计数据
+     * 轉換每週統計資料為統一格式
+     * @param {Object} data - 原始API響應資料
+     * @returns {Object} 格式化後的統計資料
      */
     const transformWeeklyData = (data) => {
-        // 计算各应用一周总使用时长
+        // 計算各程式一週總使用時長
         const appStats = {};
         Object.entries(data.appDailyStats).forEach(([appName, dailyData]) => {
             appStats[appName] = Object.values(dailyData).reduce((sum, val) => sum + val, 0);
         });
 
-        // 处理日期标签(格式:月/日)
+        // 處理日期標籤(格式:月/日)
         const dates = Object.keys(data.dailyTotals).sort();
         const timeLabels = dates.map(date => {
             const d = new Date(date);
             return `${d.getMonth() + 1}/${d.getDate()}`;
         });
 
-        // 获取每日总使用时长
+        // 取得每日總使用時長
         const timeStats = dates.map(date => data.dailyTotals[date] || 0);
-        // 计算一周总使用时长
+        // 計算一週總使用時長
         const totalUsage = Object.values(appStats).reduce((sum, val) => sum + val, 0);
 
         return {
             type: 'weekly',
-            dateRange: data.weekRange,  // 周日期范围
+            dateRange: data.weekRange,  // 週日期範圍
             totalUsage,
             appStats,
             timeStats,
             timeLabels,
-            timeDimension: 'day',  // 时间维度标识(天)
-            rawData: data          // 保留原始数据
+            timeDimension: 'day',  // 時間維度標識(天)
+            rawData: data          // 保留原始資料
         };
     };
 
     /**
-     * 转换每月统计数据为统一格式
-     * @param {Object} data - 原始API响应数据
-     * @returns {Object} 格式化后的统计数据
+     * 轉換每月統計資料為統一格式
+     * @param {Object} data - 原始API響應資料
+     * @returns {Object} 格式化後的統計資料
      */
     const transformMonthlyData = (data) => {
-        // 计算各应用一月总使用时长
+        // 計算各程式一月總使用時長
         const appStats = {};
         Object.entries(data.appDailyStats || {}).forEach(([appName, dailyData]) => {
             appStats[appName] = Object.values(dailyData).reduce((sum, val) => sum + val, 0);
         });
 
-        // 处理日期标签(格式:月/日)
+        // 處理日期標籤(格式:月/日)
         const dates = Object.keys(data.dailyTotals || {}).sort();
         const timeLabels = dates.map(date => {
             const d = new Date(date);
             return `${d.getMonth() + 1}/${d.getDate()}`;
         });
 
-        // 获取每日总使用时长
+        // 取得每日總使用時長
         const timeStats = dates.map(date => data.dailyTotals[date] || 0);
-        // 计算一月总使用时长
+        // 計算一月總使用時長
         const totalUsage = Object.values(appStats).reduce((sum, val) => sum + val, 0);
 
         return {
             type: 'monthly',
-            dateRange: data.monthRange,  // 月日期范围
+            dateRange: data.monthRange,  // 月日期範圍
             totalUsage,
             appStats,
             timeStats,
             timeLabels,
-            timeDimension: 'day',  // 时间维度标识(天)
-            rawData: data          // 保留原始数据
+            timeDimension: 'day',  // 時間維度標識(天)
+            rawData: data          // 保留原始資料
         };
     };
 
     /**
-     * 通用统计获取方法(根据类型调用不同具体方法)
-     * @param {string} deviceId - 设备ID
-     * @param {Object} options - 配置选项
-     * @param {string} [options.type='daily'] - 统计类型(daily/weekly/monthly)
-     * @param {number} [options.offset=0] - 时间偏移量
-     * @param {string} [options.date=null] - 指定日期(仅daily类型有效)
+     * 通用統計取得方法(根據類型呼叫不同具體方法)
+     * @param {string} deviceId - 裝置ID
+     * @param {Object} options - 配置選項
+     * @param {string} [options.type='daily'] - 統計類型(daily/weekly/monthly)
+     * @param {number} [options.offset=0] - 時間偏移量
+     * @param {string} [options.date=null] - 指定日期(僅daily類型有效)
      */
     const fetchStats = async (deviceId, options = {}) => {
         const { type = 'daily', offset = 0, date = null } = options;
@@ -227,15 +227,15 @@ export function useStats() {
                 await fetchMonthlyStats(deviceId, offset);
                 break;
             default:
-                error.value = '未知的统计类型';
+                error.value = '未知的統計類型';
         }
     };
 
-    // 暴露给外部使用的属性和方法
+    // 暴露給外部使用的屬性和方法
     return {
-        stats,      // 统计结果数据
-        error,      // 错误信息
-        loading,    // 加载状态
-        fetchStats  // 获取统计的通用方法
+        stats,      // 統計結果資料
+        error,      // 錯誤資訊
+        loading,    // 載入狀態
+        fetchStats  // 取得統計的通用方法
     };
 }
