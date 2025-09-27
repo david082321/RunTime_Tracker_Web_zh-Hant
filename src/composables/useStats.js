@@ -200,8 +200,8 @@ export function useStats() {
             appStats,
             timeStats,
             timeLabels,
-            timeDimension: 'day',  // 時間維度標識(天)
-            rawData: data          // 保留原始資料
+            timeDimension: 'week',  // 时间维度标识
+            rawData: data          // 保留原始数据
         };
     };
 
@@ -215,7 +215,6 @@ export function useStats() {
      */
     const fetchStats = async (deviceId, options = {}) => {
         const { type = 'daily', offset = 0, date = null } = options;
-
         switch (type) {
             case 'daily':
                 await fetchDailyStats(deviceId, date);
