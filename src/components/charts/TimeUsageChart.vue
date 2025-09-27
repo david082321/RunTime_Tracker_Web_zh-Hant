@@ -39,9 +39,9 @@ const chartInstance = {
 
 const getChartTitle = () => {
   const titles = {
-    hour: '24小時使用統計',
-    day: '每日使用統計',
-    week: '每週使用統計'
+    hour: '24小时使用统计',
+    day: '周使用统计',
+    week: '月使用统计'
   };
   return titles[props.timeDimension] || '使用統計';
 };
