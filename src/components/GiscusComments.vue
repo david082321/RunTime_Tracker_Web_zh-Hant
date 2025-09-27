@@ -86,7 +86,7 @@ const loadGiscus = () => {
   script.setAttribute('data-category-id', props.categoryId)
   script.setAttribute('data-mapping', props.mapping)
   script.setAttribute('data-term', props.term)
-  script.setAttribute('data-strict', '1')
+  script.setAttribute('data-strict', '0')
   script.setAttribute('data-reactions-enabled', props.reactionsEnabled)
   script.setAttribute('data-emit-metadata', props.emitMetadata)
   script.setAttribute('data-input-position', props.inputPosition)
