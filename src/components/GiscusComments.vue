@@ -45,7 +45,11 @@ const props = defineProps({
   },
   mapping: {
     type: String,
-    default: 'pathname'
+    default: 'specific'
+  },
+  term: {
+    type: String,
+    default: 'comments'
   },
   reactionsEnabled: {
     type: String,
@@ -57,7 +61,7 @@ const props = defineProps({
   },
   inputPosition: {
     type: String,
-    default: 'bottom'
+    default: 'top'
   },
   theme: {
     type: String,
@@ -81,6 +85,7 @@ const loadGiscus = () => {
   script.setAttribute('data-category', props.category)
   script.setAttribute('data-category-id', props.categoryId)
   script.setAttribute('data-mapping', props.mapping)
+  script.setAttribute('data-term', props.term)
   script.setAttribute('data-strict', '1')
   script.setAttribute('data-reactions-enabled', props.reactionsEnabled)
   script.setAttribute('data-emit-metadata', props.emitMetadata)
