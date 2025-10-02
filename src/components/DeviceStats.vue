@@ -55,7 +55,19 @@ const calculateRunningTime = () => {
   return Math.floor((now - startTime) / 60000);
 };
 
-// 獲取裝置統計資訊
+// 格式化时间
+const formatTime = (minutes) => {
+  const totalMinutes = parseFloat(minutes);
+  if (totalMinutes < 60) {
+    return `${totalMinutes.toFixed(2)}分鐘`;
+  } else {
+    const hours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = Math.round(totalMinutes % 60);
+    return `${hours}小時${remainingMinutes}分鐘`;
+  }
+};
+
+// 获取设备统计信息
 const getDeviceStats = () => {
   const defaultStats = {
     appCount: 0,
@@ -129,14 +141,14 @@ watch(stats, (newStats) => {
   <!-- 主要內容區域 -->
   <div>
     <!-- 设备统计概览 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <div class="bg-blue-50 hover:bg-blue-100 transition-colors duration-200 p-4 rounded-lg shadow-md dark:bg-blue-950 dark:hover:bg-blue-900">
         <p class="text-sm text-blue-700">程式總數</p>
         <p class="text-2xl font-bold">{{ getDeviceStats().appCount }}</p>
       </div>
       <div class="bg-green-50 hover:bg-green-100 transition-colors duration-200 p-4 rounded-lg shadow-md dark:bg-green-950 dark:hover:bg-green-900">
         <p class="text-sm text-green-700">總時間</p>
-        <p class="text-2xl font-bold">{{ getDeviceStats().totalUsageHours }}小時</p>
+        <p class="text-2xl font-bold">{{ formatTime(getDeviceStats().totalUsageMinutes) }}</p>
       </div>
       <div class="bg-yellow-50 hover:bg-yellow-100 transition-colors duration-200 p-4 rounded-lg shadow-md dark:bg-yellow-950 dark:hover:bg-yellow-900">
         <p class="text-sm text-yellow-700">最常用</p>
