@@ -57,7 +57,7 @@ const getBatteryTextClass = (level, isCharging) => {
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
-        设备列表
+        裝置列表
       </h2>
       <button
           @click="handleRefresh"
@@ -67,7 +67,7 @@ const getBatteryTextClass = (level, isCharging) => {
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          刷新
+          重新整理
         </span>
       </button>
     </div>
@@ -75,7 +75,7 @@ const getBatteryTextClass = (level, isCharging) => {
     <div id="devicesList" class="space-y-3">
       <!-- 空状态 -->
       <div v-if="devices.length === 0" class="text-center py-8 text-gray-400">
-        暂无设备数据
+        暫無裝置資料
       </div>
 
       <!-- 设备卡片 -->
@@ -90,12 +90,12 @@ const getBatteryTextClass = (level, isCharging) => {
           <div class="flex-1">
             <h3 class="font-bold text-lg">{{ device.device }}</h3>
             <p class="not-dark:text-gray-600 text-sm mt-1">
-              <span class="font-medium">当前应用:</span> {{ device.currentApp || '无' }}
+              <span class="font-medium">目前程式:</span> {{ device.currentApp || '無' }}
             </p>
 
             <!-- 动态电量显示 -->
             <div v-if="device.batteryLevel > 0" class="flex items-center mt-2">
-              <span class="text-gray-600 text-sm font-medium mr-2">电量:</span>
+              <span class="text-gray-600 text-sm font-medium mr-2">電量:</span>
               <div class="relative">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@ const getBatteryTextClass = (level, isCharging) => {
               class="inline-block px-2 py-1 text-xs rounded-full"
               :class="device.running ? 'bg-green-100 not-dark:text-green-800 dark:bg-green-950' : 'bg-red-100 not-dark:text-red-800 dark:bg-red-950'"
           >
-            {{ device.running ? '运行中' : '已停止' }}
+            {{ device.running ? '執行中' : '已停止' }}
           </span>
         </div>
       </div>
