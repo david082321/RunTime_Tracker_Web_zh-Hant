@@ -6,6 +6,7 @@ import RecentApps from "./RecentApps.vue";
 import UsageDetails from "./UsageDetails.vue";
 import AppUsageChart from "./charts/AppUsageChart.vue";
 import TimeUsageChart from "./charts/TimeUsageChart.vue";
+import AISummary from "./AISummary.vue";
 
 const props = defineProps({
   deviceId: {
@@ -35,7 +36,10 @@ const emit = defineEmits(['stats-update']);
 
 const { stats, error, loading, fetchStats } = useStats();
 
-// 載入統計資料
+// AI总结展开状态 - 在设备切换时保持
+const isAISummaryExpanded = ref(false);
+
+// 加载统计数据
 const loadStats = async () => {
   await fetchStats(props.deviceId, {
     type: props.statsType,
@@ -105,7 +109,6 @@ const getDeviceStats = () => {
     maxUsage = stats.value.timeStats[maxIndex];
   }
 
-
   return {
     appCount,
     totalUsageMinutes,
@@ -116,7 +119,6 @@ const getDeviceStats = () => {
     maxUsage
   };
 };
-
 
 onMounted(loadStats);
 
@@ -182,7 +184,13 @@ watch(stats, (newStats) => {
       </div>
     </div>
 
-    <!-- 圖表元件 -->
+    <!-- AI总结组件 - 支持双向绑定展开状态 -->
+    <AISummary
+        :device-id="deviceId"
+        v-model:is-expanded="isAISummaryExpanded"
+    />
+
+    <!-- 图表组件 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <AppUsageChart
           :app-stats="stats?.appStats || {}"
