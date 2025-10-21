@@ -53,14 +53,19 @@ const shouldShowToggle = computed(() => {
   return processedApps.value.length > props.showLimit;
 });
 
-// 切換展開/收起狀態
+// 是否有数据
+const hasData = computed(() => {
+  return processedApps.value.length > 0;
+});
+
+// 切换展开/收起状态
 const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value;
 };
 </script>
 
 <template>
-  <div v-if="stats" class="rounded-lg border-2 border-gray-200 shadow-md p-6 mb-6 dark:bg-[#181a1b] dark:border-gray-700">
+  <div class="rounded-lg border-2 border-gray-200 shadow-md p-6 mb-6 dark:bg-[#181a1b] dark:border-gray-700">
     <h3 class="text-lg font-medium mb-4">詳細使用資料</h3>
     <div class="overflow-x-auto">
       <table class="min-w-full not-dark:divide-y divide-gray-200">
@@ -117,7 +122,11 @@ const toggleExpanded = () => {
       </table>
     </div>
 
-    <!-- 展開/收起按鈕 -->
+    <div v-if="!hasData" class="flex flex-col items-center justify-center min-h-[100px]">
+      <span class="text-gray-400 text-lg">暫無資料</span>
+    </div>
+
+    <!-- 展开/收起按钮 -->
     <div v-if="shouldShowToggle" class="flex justify-center mt-4">
       <button
           @click="toggleExpanded"
